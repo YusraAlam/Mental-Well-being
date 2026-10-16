@@ -1,0 +1,460 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@500;600&display=swap');
+
+:root {
+    --bg: #F6F4EF;
+    --surface: #FFFFFF;
+    --primary: #172C38;
+    --text: #253C42;
+    --muted: #718080;
+    --sage: #B7D8C8;
+    --green: #579A84;
+    --lavender: #A18AC4;
+    --peach: #BE9271;
+    --border: #E5E7E1;
+}
+
+html, body, [class*="css"] {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.stApp {
+    background: var(--bg);
+    color: var(--text);
+}
+
+header[data-testid="stHeader"] {
+    background: transparent;
+}
+
+#MainMenu,
+footer {
+    visibility: hidden;
+}
+
+.block-container {
+    max-width: 1180px;
+    padding: 2rem 2.5rem 4rem;
+}
+
+h1, h2, h3 {
+    color: var(--primary);
+    letter-spacing: -0.6px;
+}
+
+h1, h2 {
+    font-family: 'Fraunces', serif;
+}
+
+p {
+    line-height: 1.7;
+}
+
+[data-testid="stSidebar"] {
+    background: var(--primary);
+}
+
+[data-testid="stSidebar"] * {
+    color: #F5F6F1;
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+    color: #D0DDD9;
+}
+
+[data-testid="stSidebar"] button {
+    border-radius: 12px;
+}
+
+.dusk-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0 30px;
+}
+
+.dusk-brand-mark {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--sage);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 29px;
+}
+
+.dusk-brand-name {
+    color: var(--primary);
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.dusk-brand-caption {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-top: 5px;
+}
+
+.dusk-page-header {
+    margin: 10px 0 28px;
+}
+
+.dusk-page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(30px, 4vw, 43px);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.dusk-page-header p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 680px;
+    margin-top: 0;
+}
+
+.dusk-card-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 10px 0 14px;
+}
+
+.dusk-card-heading h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.dusk-card-heading span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.dusk-notice {
+    padding: 18px 20px;
+    border-radius: 16px;
+    margin: 12px 0;
+    border: 1px solid var(--border);
+}
+
+.dusk-notice-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.dusk-notice-body,
+.dusk-notice li {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.dusk-notice-info {
+    background: #EAF0F2;
+}
+
+.dusk-notice-success {
+    background: #E7F2EA;
+}
+
+.dusk-notice-warning {
+    background: #F8EDE3;
+}
+
+.dusk-notice-gentle {
+    background: #E6EEE7;
+}
+
+.dusk-stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    min-height: 125px;
+}
+
+.dusk-stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.dusk-stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    color: var(--primary);
+    margin: 10px 0 4px;
+}
+
+.dusk-stat-sub {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.dusk-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.dusk-chip {
+    background: #E5EEE8;
+    color: #365E50;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dusk-score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px 20px;
+    text-align: center;
+}
+
+.dusk-score-label {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.dusk-score-dial {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    margin: 24px auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(
+        var(--green) var(--score-progress),
+        #E9ECE6 var(--score-progress)
+    );
+    position: relative;
+}
+
+.dusk-score-dial::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    background: white;
+    border-radius: 50%;
+}
+
+.dusk-score-inner {
+    z-index: 1;
+}
+
+.dusk-score-number {
+    font-family: 'Fraunces', serif;
+    font-size: 48px;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.dusk-score-outof {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.dusk-score-band {
+    color: var(--primary);
+    font-size: 17px;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.dusk-score-description {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+    max-width: 390px;
+    margin: 0 auto;
+}
+
+.dusk-score-disclaimer {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.dusk-routine-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+}
+
+.dusk-routine-title {
+    font-family: 'Fraunces', serif;
+    font-size: 23px;
+    color: var(--primary);
+    margin-bottom: 18px;
+}
+
+.dusk-routine-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 0;
+    border-bottom: 1px solid #EFF0EC;
+}
+
+.dusk-routine-row:last-child {
+    border-bottom: 0;
+}
+
+.dusk-routine-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dusk-routine-label {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.dusk-routine-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stButton > button {
+    border-radius: 12px;
+    min-height: 44px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.stButton > button[kind="primary"] {
+    background: var(--primary);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+.stButton > button[kind="primary"]:hover {
+    background: #294653;
+    border-color: #294653;
+}
+
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox div[data-baseweb="select"],
+.stSlider,
+.stTextArea textarea {
+    border-radius: 12px;
+}
+
+[data-testid="stMetric"] {
+    background: white;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+[data-testid="stMetricLabel"] {
+    color: var(--muted);
+}
+
+[data-testid="stMetricValue"] {
+    color: var(--primary);
+}
+
+hr {
+    border-color: var(--border);
+}
+
+@media (max-width: 700px) {
+    .block-container {
+        padding: 1.25rem 1rem 3rem;
+    }
+
+    .dusk-page-header h1 {
+        font-size: 31px;
+    }
+
+    .dusk-score-dial {
+        width: 165px;
+        height: 165px;
+    }
+
+    .dusk-score-number {
+        font-size: 41px;
+    }
+
+    .dusk-stat-tile {
+        padding: 15px;
+    }
+}
+
+/* Clean application layout */
+#MainMenu,
+footer,
+header[data-testid="stHeader"] {
+    visibility: hidden;
+}
+
+.block-container {
+    padding-top: 1.5rem;
+}
+
+[data-testid="stForm"] {
+    border: none;
+    padding: 0;
+}
+
+[data-testid="stVerticalBlock"] {
+    gap: 0.8rem;
+}
+
+/* Cleaner input fields */
+[data-testid="stWidgetLabel"] p {
+    font-size: 13px;
+    font-weight: 600;
+    color: #253C42;
+}
+
+[data-testid="stTextInput"] input,
+[data-testid="stNumberInput"] input,
+[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    border-radius: 12px;
+}
+
+/* Hide unwanted Streamlit form submit helper text */
+[data-testid="InputInstructions"] {
+    display: none;
+}
+
+/* Cleaner section headings */
+h1, h2, h3 {
+    letter-spacing: -0.4px;
+}
+
+.stCaption {
+    color: #718080;
+}
+
+/* Avoid excessive spacing */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 18px;
+}
