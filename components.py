@@ -1,111 +1,175 @@
-"""Thin client for the FastAPI backend. No Streamlit imports, so it is easy to test."""
-from __future__ import annotations
 
-import math
+from pathlib import Path
+import html
 
-import requests
+import streamlit as st
 
-from config import REQUEST_TIMEOUT
-
-
-class ApiError(Exception):
-    """A failure the UI can explain to the user."""
-
-    def __init__(self, kind: str, title: str, message: str, details: list[str] | None = None):
-        super().__init__(message)
-        self.kind = kind
-        self.title = title
-        self.message = message
-        self.details = details or []
+from config import BANDS, SCORE_MAX, SCORE_MIN
 
 
-def _base(url: str) -> str:
-    return (url or "").strip().rstrip("/")
+COLORS = {
+    "background": "#F6F4EF",
+    "surface": "#FFFFFF",
+    "primary": "#172C38",
+    "text": "#253C42",
+    "muted": "#718080",
+    "sage": "#B7D8C8",
+    "green": "#579A84",
+    "lavender": "#A18AC4",
+    "peach": "#BE9271",
+    "border": "#E5E7E1",
+}
 
 
-def check_health(base_url: str, timeout: float = 2.0) -> bool:
-    """True if the API answers. Tries /health first, then / (works with the original main.py)."""
-    base = _base(base_url)
-    for path in ("/health", "/"):
-        try:
-            response = requests.get(base + path, timeout=timeout)
-        except requests.exceptions.RequestException:
-            return False
-        if response.ok:
-            return True
-    return False
+def esc(value):
+    return html.escape(str(value))
 
 
-def _validation_details(response: requests.Response) -> list[str]:
-    try:
-        detail = response.json().get("detail", [])
-    except Exception:
-        return []
-    out = []
-    if isinstance(detail, list):
-        for item in detail:
-            if isinstance(item, dict):
-                loc = [str(p) for p in item.get("loc", []) if p != "body"]
-                out.append(f"{'.'.join(loc) or 'request'}: {item.get('msg', 'invalid value')}")
-    elif isinstance(detail, str):
-        out.append(detail)
-    return out
+def render(content):
+    st.markdown(content, unsafe_allow_html=True)
 
 
-def predict(base_url: str, payload: dict, timeout: float = REQUEST_TIMEOUT) -> float:
-    """POST /predict and return predicted_mental_health_score. Raises ApiError."""
-    base = _base(base_url)
-    try:
-        response = requests.post(f"{base}/predict", json=payload, timeout=timeout)
-    except (requests.exceptions.MissingSchema,
-            requests.exceptions.InvalidSchema,
-            requests.exceptions.InvalidURL):
-        raise ApiError(
-            "config", "The API address is not valid",
-            "Enter a full address such as http://127.0.0.1:8000 under API settings.",
-        )
-    except requests.exceptions.Timeout:
-        raise ApiError(
-            "timeout", "The API took too long to answer",
-            f"No response within {timeout:g} seconds. Check that the server is running and try again.",
-        )
-    except requests.exceptions.ConnectionError:
-        raise ApiError(
-            "connection", "Can't reach the API",
-            f"Nothing is answering at {base}. Start the backend with: uvicorn main:app --reload",
-        )
-    except requests.exceptions.RequestException as exc:
-        raise ApiError("network", "The request failed", str(exc))
+def inject_css():
+    css_path = Path(__file__).parent / "styles.css"
 
-    if response.status_code == 422:
-        raise ApiError(
-            "validation", "The API rejected these inputs",
-            "Fix the values below and run the analysis again.",
-            _validation_details(response),
-        )
-    if response.status_code >= 500:
-        raise ApiError(
-            "server", "The API hit an error",
-            "The server failed while predicting. Check the uvicorn terminal for the traceback.",
-            [response.text[:300]] if response.text else [],
-        )
-    if not response.ok:
-        raise ApiError(
-            "http", f"Unexpected response ({response.status_code})",
-            "The API answered, but not with a prediction.",
-            [response.text[:300]] if response.text else [],
+    if css_path.exists():
+        css = css_path.read_text(encoding="utf-8")
+        st.markdown(
+            f"<style>{css}</style>",
+            unsafe_allow_html=True,
         )
 
-    try:
-        score = response.json()["predicted_mental_health_score"]
-        score = float(score)
-    except (ValueError, KeyError, TypeError):
-        raise ApiError(
-            "bad_response", "The response was not in the expected format",
-            "Expected JSON with a numeric predicted_mental_health_score field.",
-            [response.text[:300]] if response.text else [],
+
+def brand():
+    render("""
+        <div class="dusk-brand">
+            <div class="dusk-brand-mark">☾</div>
+            <div>
+                <div class="dusk-brand-name">dusk</div>
+                <div class="dusk-brand-caption">
+                    YOUR WELLNESS SPACE
+                </div>
+            </div>
+        </div>
+    """)
+
+
+def page_header(title, sub=""):
+    render(f"""
+        <div class="dusk-page-header">
+            <h1>{esc(title)}</h1>
+            <p>{esc(sub)}</p>
+        </div>
+    """)
+
+
+def card_title(title, hint=""):
+    render(f"""
+        <div class="dusk-card-heading">
+            <h3>{esc(title)}</h3>
+            <span>{esc(hint)}</span>
+        </div>
+    """)
+
+
+def notice(kind, title, body="", items=None):
+    allowed = {"info", "success", "warning", "gentle"}
+    kind = kind if kind in allowed else "info"
+
+    list_html = ""
+
+    if items:
+        list_html = "<ul>" + "".join(
+            f"<li>{esc(item)}</li>" for item in items
+        ) + "</ul>"
+
+    render(f"""
+        <div class="dusk-notice dusk-notice-{kind}">
+            <div class="dusk-notice-title">{esc(title)}</div>
+            <div class="dusk-notice-body">{esc(body)}</div>
+            {list_html}
+        </div>
+    """)
+
+
+def stat_tile(label, value, sub=""):
+    render(f"""
+        <div class="dusk-stat-tile">
+            <div class="dusk-stat-label">{esc(label)}</div>
+            <div class="dusk-stat-value">{esc(value)}</div>
+            <div class="dusk-stat-sub">{esc(sub)}</div>
+        </div>
+    """)
+
+
+def chips(items):
+    content = "".join(
+        f'<span class="dusk-chip">{esc(item)}</span>'
+        for item in items
+    )
+    render(f'<div class="dusk-chips">{content}</div>')
+
+
+def band_for(score):
+    selected = BANDS[0]
+
+    for band in BANDS:
+        if score >= band[0]:
+            selected = band
+
+    return {
+        "key": selected[1],
+        "label": selected[2],
+        "text": selected[3],
+    }
+
+
+
+def score_dial(score, uid="score"):
+    score = float(score)
+
+    st.container(border=True)
+    with st.container(border=True):
+
+        st.subheader("Your Mental Wellbeing Score")
+
+        st.metric(
+            label="Predicted score",
+            value=f"{score:.1f} / 10",
         )
-    if not math.isfinite(score):
-        raise ApiError("bad_response", "The model returned an invalid number",
-                       "The predicted score was not a finite value.")
-    return score
+
+        st.progress(max(0.0, min(score / 10, 1.0)))
+
+        st.caption(
+            "An ML-based estimate, not a clinical diagnosis."
+        )
+
+
+def day_ring(sleep, study, activity, screen):
+    import streamlit as st
+
+    routine = [
+        ("Sleep", sleep, "#7185B8"),
+        ("Study", study, "#BE9271"),
+        ("Movement", activity, "#579A84"),
+        ("Screen time", screen, "#A18AC4"),
+    ]
+
+    with st.container(border=True):
+        st.subheader("Your Daily Rhythm")
+        st.caption("A quick look at how you spend your day.")
+
+        for label, value, color in routine:
+            col1, col2, col3 = st.columns([0.4, 3, 1])
+
+            with col1:
+                st.markdown(
+                    f"<span style='color:{color};font-size:24px'>●</span>",
+                    unsafe_allow_html=True,
+                )
+
+            with col2:
+                st.write(label)
+
+            with col3:
+                st.write(f"{value} h")
